@@ -1,0 +1,46 @@
+package com.charan;
+
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+
+
+public class masterservlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+   
+    public masterservlet() {
+        super();
+        
+    }
+
+	
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		 String requestURI = request.getRequestURI();
+	        
+	        if (requestURI.equals("/servlet1")) 
+	        {
+	            
+	            response.getWriter().write("This is Servlet 1");
+	        } 
+	        else if (requestURI.equals("/servlet2"))
+	        {
+	           
+	            response.getWriter().write("This is Servlet 2");
+	        } else 
+	        {
+	            
+	            response.getWriter().write("Unknown servlet request");
+	        }
+	}
+
+	
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		
+	}
+
+}
