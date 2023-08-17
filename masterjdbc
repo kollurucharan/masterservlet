@@ -9,33 +9,27 @@ import java.util.ArrayList;
 public class masterjdbc {
 	Connection conn;
 	Statement stat;
-	
+	ResultSet rs;
 	ArrayList<String> alll;
-	
-	
-public void king()
-{
-	alll = new ArrayList<>();
-	try {
-		Class.forName("org.postgresql.Driver");
-		conn = DriverManager.getConnection("jdbc:postgresql://192.168.3.6:5432/postgres",
-				"postgres", "9966517988");
-		stat = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
-		String record = "select * from empp_pp";
-		ResultSet rs = stat.executeQuery(record);
-		while (rs.next()) {
-			int a = rs.getInt(1);
-			String b = rs.getString(2);
-			String c = rs.getString(3);
-			int d = rs.getInt(4);
-			alll.add(a + "," + b + "," + c + "," + d);
-			
+	public void king(String query) {
+		alll = new ArrayList<>();
+		try {
+			Class.forName("org.postgresql.Driver");
+			conn = DriverManager.getConnection("jdbc:postgresql://192.168.110.48:5432/plf_training",
+					"plf_training_admin", "pff123");
+			stat = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			rs = stat.executeQuery(query);
+			System.out.println("jdbc:" + rs);
 
+		} catch (Exception ex) {
+			System.out.println(ex);
 		}
+	}
 
-	} catch (Exception ex) {
-		System.out.println("error");
+	public ResultSet input() {
+		return rs;
+
 	}
-	}
+
 }
