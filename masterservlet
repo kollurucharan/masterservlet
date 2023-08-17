@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -21,24 +22,26 @@ public class masterservlet extends HttpServlet {
 	}
 
 	public void loop(ResultSet rs, HttpServletResponse response) throws JSONException, SQLException, IOException {
+		JSONObject json = new JSONObject();
+		String jsonString = null;
 		while (rs.next()) {
 			int a = rs.getInt(1);
 			String b = rs.getString(2);
 			String c = rs.getString(3);
 			int d = rs.getInt(4);
-			System.out.println("aa" + a);
-			JSONObject json = new JSONObject();
+
 			json.put("a", a);
 			json.put("b", b);
 			json.put("c", c);
 			json.put("d", d);
 
-			String jsonString = json.toString();
-			System.out.println(jsonString);
-			response.setContentType("application/json");
-			response.setCharacterEncoding("UTF-8");
-			response.getWriter().write(jsonString.toString());
+			jsonString = json.toString();
 		}
+
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().write(jsonString.toString());
+
 	}
 
 	masterjdbc mj = new masterjdbc();
@@ -68,6 +71,40 @@ public class masterservlet extends HttpServlet {
 				loop(rs, response);
 			} catch (Exception e) {
 				System.out.println("error at resultset");
+				System.out.println(e);
+			}
+		}
+
+		else if (param1.equals("start")) {
+			try {
+				String query = "select * from empp_pp ";
+				mj.king(query);
+				ResultSet rs = mj.input();
+				System.out.println("fas11111:" + rs);
+
+				JSONArray jarray = new JSONArray();
+
+				while (rs.next()) {
+					int a = rs.getInt(1);
+					String b = rs.getString(2);
+					String c = rs.getString(3);
+					int d = rs.getInt(4);
+					JSONObject json = new JSONObject();
+					json.put("a", a);
+					json.put("b", b);
+					json.put("c", c);
+					json.put("d", d);
+
+					jarray.put(json);
+				}
+				System.out.println("fulldata" + jarray);
+				response.setContentType("application/json");
+				response.setCharacterEncoding("UTF-8");
+				response.getWriter().write(jarray.toString());
+
+			} catch (Exception e) {
+				System.out.println("error at resultset");
+				System.out.println("jkhdsf");
 				System.out.println(e);
 			}
 		}
