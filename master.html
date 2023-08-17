@@ -36,12 +36,13 @@
 			<lable for="l4">salary</lable>
 			<input type="text" id="t4">
 		</div>
-		
+
 		<br> <br> <br> <br>
 		<div id="d7">
 			<input type="button" value="first" id="b1" onclick="first()">
 			<input type="button" value="prev" id="b2" onclick="prev()"> <input
-				type="button" value="next" id="b3" onclick="next()"> <input
+				type="button" value="next" id="b3" onclick="next()"> 
+				<input
 				type="button" value="last" id="b4" onclick="last()">
 		</div>
 		<div id="d8">
@@ -61,16 +62,45 @@
 
 
 		<script>
-			localStorage.setItem('', 'value');
+			var current = 1;
+			var length;
 			var t1 = document.getElementById('t1');
 			var t2 = document.getElementById('t2');
 			var t3 = document.getElementById('t3');
 			var t4 = document.getElementById('t4');
-	
+
+			function start() {
+				var x = new XMLHttpRequest();
+				var a = "start";
+				var baseUrl = "http://localhost:8080/MyServlet/masterServlet";
+				var urlWithParameters = baseUrl + "?img=" + a;
+
+				x.open("GET", urlWithParameters, true);
+				x.onreadystatechange = function() {
+					if (x.readyState == 4 && x.status == 200) {
+						var jsonData = x.responseText;
+
+						var data = JSON.parse(jsonData);
+						console.log(jsonData);
+
+						localStorage.setItem('start', JSON.stringify(data));
+
+					}
+				};
+
+				x.send();
+			}
+			start();
+
+			var storedData = localStorage.getItem('start');
+			var parsedData = JSON.parse(storedData);
+			var arrayLength = parsedData.length;
+			console.log("Array Length: " + arrayLength);
 
 			function first() {
 				var x = new XMLHttpRequest();
 				var a = "first";
+				current = 0;
 				var baseUrl = "http://localhost:8080/MyServlet/masterServlet";
 				var urlWithParameters = baseUrl + "?img=" + a;
 
@@ -78,25 +108,25 @@
 				x.onreadystatechange = function() {
 					if (x.readyState == 4 && x.status == 200) {
 						var jsonData = x.responseText;
-						console.log(jsonData);
+
 						var data = JSON.parse(jsonData);
-						console.log("sd" + data.a);
+
 						t1.value = data.a;
 						t2.value = data.b;
 						t3.value = data.c;
 						t4.value = data.d;
-					
 
 					}
 				};
 
 				x.send();
 			}
-			
-			
+			first();
+
 			function last() {
 				var x = new XMLHttpRequest();
 				var a = "last";
+				current = arrayLength;
 				var baseUrl = "http://localhost:8080/MyServlet/masterServlet";
 				var urlWithParameters = baseUrl + "?img=" + a;
 
@@ -104,23 +134,55 @@
 				x.onreadystatechange = function() {
 					if (x.readyState == 4 && x.status == 200) {
 						var jsonData = x.responseText;
-						console.log(jsonData);
+
 						var data = JSON.parse(jsonData);
-						console.log("sd" + data.a);
+
 						t1.value = data.a;
 						t2.value = data.b;
 						t3.value = data.c;
 						t4.value = data.d;
-					
 
 					}
 				};
 
 				x.send();
 			}
+
+			function next() {
+				var i = current + 1;
+				var empid = parsedData[i].a;
+				var name = parsedData[i].b;
+				var job = parsedData[i].c;
+				var sal = parsedData[i].d;
+				console.log(empid);
+
+				t1.value = empid;
+				t2.value = name;
+				t3.value = job;
+				t4.value = sal;
+				current = i;
+
+			}
+			function prev() {
+				var i = current - 1;
+				var empid = parsedData[i].a;
+				var name = parsedData[i].b;
+				var job = parsedData[i].c;
+				var sal = parsedData[i].d;
+				console.log(empid);
+
+				t1.value = empid;
+				t2.value = name;
+				t3.value = job;
+				t4.value = sal;
+				current = i;
+
+			}
 			
-			
-			
+			function del()
+			{
+				
+			}
 		</script>
 </body>
 </html>
