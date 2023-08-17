@@ -1,46 +1,81 @@
 package com.charan;
 
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class masterservlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-   
-    public masterservlet() {
-        super();
-        
-    }
 
-	
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		 String requestURI = request.getRequestURI();
-	        
-	        if (requestURI.equals("/servlet1")) 
-	        {
-	            
-	            response.getWriter().write("This is Servlet 1");
-	        } 
-	        else if (requestURI.equals("/servlet2"))
-	        {
-	           
-	            response.getWriter().write("This is Servlet 2");
-	        } else 
-	        {
-	            
-	            response.getWriter().write("Unknown servlet request");
-	        }
+	public masterservlet() {
+		super();
+
 	}
 
-	
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		
+	public void loop(ResultSet rs, HttpServletResponse response) throws JSONException, SQLException, IOException {
+		while (rs.next()) {
+			int a = rs.getInt(1);
+			String b = rs.getString(2);
+			String c = rs.getString(3);
+			int d = rs.getInt(4);
+			System.out.println("aa" + a);
+			JSONObject json = new JSONObject();
+			json.put("a", a);
+			json.put("b", b);
+			json.put("c", c);
+			json.put("d", d);
+
+			String jsonString = json.toString();
+			System.out.println(jsonString);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(jsonString.toString());
+		}
+	}
+
+	masterjdbc mj = new masterjdbc();
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		String param1 = request.getParameter("img");
+		if (param1.equals("first")) {
+			try {
+				String query = "select * from empp_pp limit 1";
+				mj.king(query);
+				ResultSet rs = mj.input();
+				System.out.println("fas:" + rs);
+				loop(rs, response);
+			} catch (Exception e) {
+				System.out.println("error at resultset");
+				System.out.println(e);
+			}
+		}
+
+		else if (param1.equals("last")) {
+			try {
+				String query = "select * from empp_pp LIMIT 1 OFFSET (SELECT COUNT(*) - 1 FROM empp_pp)";
+				mj.king(query);
+				ResultSet rs = mj.input();
+				System.out.println("fas:" + rs);
+				loop(rs, response);
+			} catch (Exception e) {
+				System.out.println("error at resultset");
+				System.out.println(e);
+			}
+		}
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
 	}
 
 }
