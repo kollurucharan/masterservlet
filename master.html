@@ -8,8 +8,13 @@
 
 <title>master card</title>
 <h1 style="text-align: center;">master card</h1>
+
+<div id="d">
+
+	<label for="m">mode</label> <input type="text" id="m">
+</div>
 <style>
-#d2, #d3, #d4, #d5, #d7, #d8, #d9 {
+#d2, #d3, #d4, #d5, #d7, #d8, #d9, #d {
 	display: flex;
 	justify-content: center;
 	align-items: flex-end;
@@ -23,6 +28,7 @@
 		<div id="d2">
 			<lable for="l1">emp id</lable>
 			<input type="text" id="t1">
+
 		</div>
 		<div id="d3">
 			<lable for="l2">emp name</lable>
@@ -41,8 +47,7 @@
 		<div id="d7">
 			<input type="button" value="first" id="b1" onclick="first()">
 			<input type="button" value="prev" id="b2" onclick="prev()"> <input
-				type="button" value="next" id="b3" onclick="next()"> 
-				<input
+				type="button" value="next" id="b3" onclick="next()"> <input
 				type="button" value="last" id="b4" onclick="last()">
 		</div>
 		<div id="d8">
@@ -54,7 +59,7 @@
 		<div id="d9">
 			<input type="button" value="search" id="b9" onclick="search()">
 			<input type="button" value="exit" id="b10" onclick="exit()">
-			<input type="button" value="clear" id="b11" onclick="clear()">
+			<input type="button" value="clear" id="b11" >
 		</div>
 
 
@@ -68,8 +73,19 @@
 			var t2 = document.getElementById('t2');
 			var t3 = document.getElementById('t3');
 			var t4 = document.getElementById('t4');
+			var m = document.getElementById('m');
+
+			document.getElementById("b11").addEventListener("click",function clear() {
+				m.value="";
+				t1.value = "";
+				t2.value = "";
+				t3.value = "";
+				t4.value = "";
+
+			});
 
 			function start() {
+				m.value = "read";
 				var x = new XMLHttpRequest();
 				var a = "start";
 				var baseUrl = "http://localhost:8080/MyServlet/masterServlet";
@@ -98,6 +114,7 @@
 			console.log("Array Length: " + arrayLength);
 
 			function first() {
+				m.value = "read1";
 				var x = new XMLHttpRequest();
 				var a = "first";
 				current = 0;
@@ -124,9 +141,10 @@
 			first();
 
 			function last() {
+				m.value = "read4";
 				var x = new XMLHttpRequest();
 				var a = "last";
-				current = arrayLength;
+				current = arrayLength - 1;
 				var baseUrl = "http://localhost:8080/MyServlet/masterServlet";
 				var urlWithParameters = baseUrl + "?img=" + a;
 
@@ -149,6 +167,7 @@
 			}
 
 			function next() {
+				m.value = "read3";
 				var i = current + 1;
 				var empid = parsedData[i].a;
 				var name = parsedData[i].b;
@@ -164,6 +183,7 @@
 
 			}
 			function prev() {
+				m.value = "read2";
 				var i = current - 1;
 				var empid = parsedData[i].a;
 				var name = parsedData[i].b;
@@ -178,10 +198,136 @@
 				current = i;
 
 			}
-			
-			function del()
-			{
-				
+			function search() {
+
+				var id = document.getElementById('t1').value;
+				var a = "search";
+				var x = new XMLHttpRequest();
+				var baseUrl = "http://localhost:8080/MyServlet/masterServlet";
+				var urlWithParameters = baseUrl + "?img=" + a + "&empid=" + id;
+
+				x.open("GET", urlWithParameters, true);
+				x.onreadystatechange = function() {
+					if (x.readyState == 4 && x.status == 200) {
+						var jsonData = x.responseText;
+
+						var data = JSON.parse(jsonData);
+
+						t1.value = data.a;
+						t2.value = data.b;
+						t3.value = data.c;
+						t4.value = data.d;
+
+					}
+				};
+				x.send();
+			}
+
+			function del() {
+				m.value = "delete1";
+
+			}
+			function add() {
+				m.value = "add";
+				t1.value = "";
+				t2.value = "";
+				t3.value = "";
+				t4.value = "";
+
+			}
+			function edit() {
+				m.value = "edit";
+
+			}
+			function save() {
+				var mode = document.getElementById('m').value;
+				var id = document.getElementById('t1').value;
+				var name = document.getElementById('t2').value;
+				var job = document.getElementById('t3').value;
+				var sal = document.getElementById('t4').value;
+				console.log(mode);
+
+				if (mode === ("delete1")) {
+					var a = "delete";
+					var x = new XMLHttpRequest();
+					var baseUrl = "http://localhost:8080/MyServlet/masterServlet";
+					var urlWithParameters = baseUrl + "?img=" + a + "&empid="
+							+ id;
+
+					x.open("GET", urlWithParameters, true);
+					x.onreadystatechange = function() {
+						if (x.readyState == 4 && x.status == 200) {
+
+							function showAlert() {
+								alert("This is an alert box!")
+							}
+							;
+							showAlert();
+							t1.value = "";
+							t2.value = "";
+							t3.value = "";
+							t4.value = "";
+
+						}
+					};
+
+					x.send();
+
+				}
+
+				else if (mode === ("add")) {
+
+					var a = "add";
+					var x = new XMLHttpRequest();
+					var baseUrl = "http://localhost:8080/MyServlet/masterServlet";
+					var urlWithParameters = baseUrl + "?img=" + a + "&empid="
+							+ id + "&name=" + name + "&job=" + job + "&sal="
+							+ sal;
+					x.open("GET", urlWithParameters, true);
+					x.onreadystatechange = function() {
+						if (x.readyState == 4 && x.status == 200) {
+
+							function showAlert() {
+								alert("successfully added!")
+							}
+							;
+							showAlert();
+
+						}
+					};
+
+					x.send();
+
+				}
+
+				else if (mode === ("edit")) {
+					var a = "edit";
+					var x = new XMLHttpRequest();
+					var baseUrl = "http://localhost:8080/MyServlet/masterServlet";
+					var urlWithParameters = baseUrl + "?img=" + a + "&empid="
+							+ id + "&name=" + name + "&job=" + job + "&sal="
+							+ sal;
+					x.open("GET", urlWithParameters, true);
+					x.onreadystatechange = function() {
+						if (x.readyState == 4 && x.status == 200) {
+
+							function showAlert() {
+								alert("successfully edited!")
+							}
+							;
+							showAlert();
+
+						}
+					};
+
+					x.send();
+				}
+
+				start();
+
+			}
+			function exit() {
+				  window.close();
 			}
 		</script>
 </body>
