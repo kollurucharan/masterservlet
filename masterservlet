@@ -24,20 +24,22 @@ public class masterservlet extends HttpServlet {
 	public void loop(ResultSet rs, HttpServletResponse response) throws JSONException, SQLException, IOException {
 		JSONObject json = new JSONObject();
 		String jsonString = null;
+
 		while (rs.next()) {
+			System.out.println("json1" + json);
 			int a = rs.getInt(1);
 			String b = rs.getString(2);
 			String c = rs.getString(3);
 			int d = rs.getInt(4);
-
+			System.out.println("json2" + json);
 			json.put("a", a);
 			json.put("b", b);
 			json.put("c", c);
 			json.put("d", d);
-
+			System.out.println("json3" + json);
 			jsonString = json.toString();
 		}
-
+		System.out.println("loop" + rs.toString());
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
 		response.getWriter().write(jsonString.toString());
@@ -49,6 +51,7 @@ public class masterservlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String param1 = request.getParameter("img");
+
 		if (param1.equals("first")) {
 			try {
 				String query = "select * from empp_pp limit 1";
@@ -108,11 +111,68 @@ public class masterservlet extends HttpServlet {
 				System.out.println(e);
 			}
 		}
+
+		else if (param1.equals("delete")) {
+			try {
+				int param2 = Integer.parseInt(request.getParameter("empid"));
+				String query = "DELETE FROM empp_pp WHERE id = ?";
+				mj.kinguu(query, param2);
+				ResultSet rs = mj.input();
+				System.out.println("delete:" + rs);
+
+			} catch (Exception e) {
+				System.out.println("error at delete");
+				System.out.println(e);
+			}
+		}
+
+		else if (param1.equals("add")) {
+			try {
+				int param2 = Integer.parseInt(request.getParameter("empid"));
+				String param3 = (request.getParameter("name"));
+				String param4 = (request.getParameter("job"));
+				int param5 = Integer.parseInt(request.getParameter("sal"));
+				String query = "insert into empp_pp values(?,?,?,?);";
+				mj.kinguu(query, param2, param3, param4, param5);
+				ResultSet rs = mj.input();
+				System.out.println("delete:" + rs);
+
+			} catch (Exception e) {
+				System.out.println("error at delete");
+				System.out.println(e);
+			}
+		}
+
+		else if (param1.equals("edit")) {
+			try {
+				int param2 = Integer.parseInt(request.getParameter("empid"));
+				String param3 = (request.getParameter("name"));
+				String param4 = (request.getParameter("job"));
+				int param5 = Integer.parseInt(request.getParameter("sal"));
+				String query = "update empp_pp set name=?,department=?,salary=? where id=?;";
+				mj.kinguu(query, param2, param3, param4, param5);
+				ResultSet rs = mj.input();
+				System.out.println("delete:" + rs);
+
+			} catch (Exception e) {
+				System.out.println("error at delete");
+				System.out.println(e);
+			}
+		}
+
+		else if (param1.equals("search")) {
+			try {
+				int param2 = Integer.parseInt(request.getParameter("empid"));
+				String query = "select * from empp_pp where id=?;";
+				mj.kinguu(query, param2);
+				ResultSet KGF = mj.input();
+				System.out.println("fas111111:" + KGF.toString());
+				loop(KGF, response);
+			} catch (Exception e) {
+				System.out.println("error at resultset");
+				System.out.println(e);
+			}
+		}
+
 	}
-
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-
-	}
-
 }
